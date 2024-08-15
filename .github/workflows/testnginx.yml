@@ -1,0 +1,25 @@
+name: Nginx Image
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "testnginx/Dockerfile"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "testnginx/Dockerfile"
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    name: "Build Image"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Build"
+        run: |
+          cd testnginx
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u fkarnagi --password-stdin
+          docker build -t testnginx:latest .
+          docker push testnginx:latest
